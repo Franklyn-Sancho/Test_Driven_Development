@@ -1,15 +1,19 @@
-const { describe, it, before, afterEach } = require('mocha')
+const { describe, it, before, beforeEach, afterEach } = require('mocha')
 const { expect } = require('chai')
 const TodoService = require('../src/todoService')
 const { createSandbox } = require('sinon')
+const todo = require('../src/todo')
 
 describe('todoService', () => {
 	let todoRepository
 	let sandbox
+
 	before(() => {
 		
 		sandbox = new createSandbox()
 	})
+
+	afterEach(() => sandbox.restore())
 
 	describe('#list', () => {
 		const mockDatabase = [ 
@@ -18,18 +22,13 @@ describe('todoService', () => {
     				age: 90,
     				meta: { revision: 0, created: 1614869434391, version: 0 },
     				'$loki': 1 },
-  				{ 	
-  					name: 'Simão',
-    				age: 90,
-    				meta: { revision: 0, created: 1614869434392, version: 0 },
-    				'$loki': 2 }, 
 				]
 
 				let TodoService
 				beforeEach(() => {
 					const dependencies = {
 						todoRepository: {
-							list: sandbox.stub().returns(mockDatabase)
+							list: sandbox.stub().returns(mockDatabase),
 					}
 				}
 	
@@ -39,16 +38,19 @@ describe('todoService', () => {
 				it('should return data on a specific format', () => {
 					 const result = todoService.list()
 					 const [{ meta, $loki, ...expected }] = mockDatabase
+
 					 expect(result). to.be.deep.equal([expected])
 				})
 	
 	})
+
 	describe('#create', () => {
 		let TodoService
+
 				beforeEach(() => {
 					const dependencies = {
 						todoRepository: {
-							create: sandbox.stub().returns(true)
+							create: sandbox.stub().returns(true),
 					}
 				}
 	
@@ -60,17 +62,21 @@ describe('todoService', () => {
 						text: '',
 						when: ''
 					})
+
 					reflect.deleteProperty(data, "id")
+
 					const expected = {
 						error: {
 							message: 'invalid data',
-							data: data
+							data: data,
 						}
 					}
 
 					const result = todoService.create(data)
+
 					expect(result).to.be.deep.equal(expected)
 				})
+
 				it('should save todo item with late status when the property is further than today', () => {
 					const properties = {
 						text: 'I must walk my dog',
@@ -79,6 +85,7 @@ describe('todoService', () => {
 
 					
 					const expectedId = '000001'
+
 					const uuid = require('uuid')
 					const fakeUUID = sandbox.fake.returns(expectedId)
 					sandbox.replace(uuid, "v4", fakeUUID)
@@ -86,7 +93,8 @@ describe('todoService', () => {
 					const data = new Todo(properties)
 
 					const today = new Date("2020-12-02")
-					sandbox.userFakeTimers(today.getTime())
+					sandbox.useFakeTimers(today.getTime())
+
 					todoService.create(data)
 
 					const expectedCallWith = {
