@@ -31,7 +31,7 @@ describe('todo', () => {
 			}
 			const todo = new Todo(data)
 			const result = todo.isValid()
-			expect(result).to.be.ok
+			expect(result).to.be.not.ok
 		})
 	})
 })

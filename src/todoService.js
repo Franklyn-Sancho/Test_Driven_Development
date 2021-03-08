@@ -3,13 +3,17 @@ class TodoService {
 		this.todoRepository = todoRepository
 	}
 
+	list(query) {
+		return  this.todoRepository.list().map(({ meta, $loki, ...result }) => result)
+	}
+
 	create(todoItem) {
 		if(!todoItem.isValid()) {
 			return {
 				error: {
 					message: 'invalid data',
 					data: todoItem
-				}
+				},
 			}
 		}
 
@@ -19,13 +23,7 @@ class TodoService {
 			...todoItem,
 			status: when > today ? 'pending' : 'late'
 		}
-		return this.todayRepository.create(date)
-
-	}
-
-	list(query) {
-		return this.todoRepository.list()
-			.map(({ meta, $loki, ...expected }) => result)
+		return this.todayRepository.create(todo)
 
 	}
 
