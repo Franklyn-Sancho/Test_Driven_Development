@@ -1,7 +1,7 @@
 const uuid = require('uuid')
 
 class Todo {
-	constructor({text, when}) {
+	constructor({ text, when }) {
 		this.text = text
 		this.when = when
 		this.status = ""
