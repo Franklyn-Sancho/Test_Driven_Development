@@ -4,7 +4,7 @@ class TodoService {
 	}
 
 	list(query) {
-		return  this.todoRepository.list().map(({ meta, $loki, ...result }) => result)
+		return this.todoRepository.list().map(({ meta, $loki, ...result }) => result)
 	}
 
 	create(todoItem) {
@@ -23,7 +23,7 @@ class TodoService {
 			...todoItem,
 			status: when > today ? 'pending' : 'late'
 		}
-		return this.todayRepository.create(todo)
+		return this.todoRepository.create(todo)
 
 	}
 

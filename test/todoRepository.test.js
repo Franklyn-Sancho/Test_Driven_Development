@@ -1,7 +1,8 @@
 const { describe, it, before, afterEach } = require('mocha')
 const { expect } = require('chai')
-const TodoRepository = require('../src/todoRepository')
+
 const { createSandbox } = require('sinon')
+const TodoRepository = require('../src/todoRepository')
 
 describe('todoRepository', () => {
 	let todoRepository
